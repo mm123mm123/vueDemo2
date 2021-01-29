@@ -1,15 +1,15 @@
 <template>
   <el-container style="height: 100vh">
     <el-aside width="200px">
-      <el-menu :router=true>
-          <el-menu-item index="article">
-            文章
-          </el-menu-item>
+      <el-menu :router="true">
+        <el-menu-item index='article' :route="{name: 'Article'}">
+          文章
+        </el-menu-item>
         <el-submenu index="2">
           <template slot="title"><i class="el-icon-menu"></i>用户权限</template>
           <el-menu-item-group>
-              <el-menu-item index="user">用户列表</el-menu-item>
-              <el-menu-item index="rights">权限管理</el-menu-item>
+            <el-menu-item index="user">用户列表</el-menu-item>
+            <el-menu-item index="rights">权限管理</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
       </el-menu>

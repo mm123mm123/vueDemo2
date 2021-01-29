@@ -15,7 +15,9 @@
   </div>
 </template>
 <script>
-import router from '../router'
+import {api} from '@/utils/ajax.js'
+import {router} from '../router'
+import {getToken, removeToken, setToken} from '@/utils/auth'
 
 export default {
   data () {
@@ -51,28 +53,14 @@ export default {
   methods: {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
-        console.log(valid)
         if (valid) {
-          const httpRequest = new XMLHttpRequest()
-          httpRequest.onreadystatechange = () => {
-            try {
-              if (httpRequest.readyState === XMLHttpRequest.DONE) {
-                if (httpRequest.status === 200) {
-                  if(JSON.parse(httpRequest.response).info.result==='success'){
-                    router.push('/layout')
-                  }
-                } else {
-                  alert('There was a problem with the request.');
-                }
-              }
+          this.$store.dispatch('login', this.ruleForm).then(data => {
+            if (data.result === 'success') {
+              setToken()
+              router.push('/layout')
             }
-            catch( e ) {
-              alert('Caught Exception: ' + e.description);
-            }
-          }
-          httpRequest.open('POST','http://localhost:8080/api/login/auth')
-          httpRequest.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-          httpRequest.send(JSON.stringify(this.ruleForm));
+          })
+          this.$store.dispatch('getInfo')
         } else {
           console.log('error submit!!')
           return false
