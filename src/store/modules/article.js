@@ -9,12 +9,19 @@ const article = {
       name: ''
     },
   },
+  mutations: {
+    setArticle (state, data) {
+      state.articleList = data.list
+      state.totalCount = data.totalCount
+    },
+  },
   actions: {
-    getArticleList ({state}) {
-      api('GET', '/article/listArticle', state.listQuery).then(data => {
-        this.state.articleList = data.list
-        this.state.totalCount = data.totalCount
-      })
+    getArticleList ({state, commit}) {
+      return api('GET', '/article/listArticle', state.listQuery)
+        .then(data => {
+            commit('setArticle', data)
+          }
+        )
     }
   }
 }

@@ -54,13 +54,14 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$store.dispatch('login', this.ruleForm).then(data => {
-            if (data.result === 'success') {
-              setToken()
-              router.push('/layout')
-            }
-          })
-          this.$store.dispatch('getInfo')
+          this.$store.dispatch('login', this.ruleForm)
+            .then(data => {
+              if (data.result === 'success') {
+                setToken()
+                router.push('/layout')
+                this.$store.dispatch('getInfo')
+              }
+            })
         } else {
           console.log('error submit!!')
           return false
