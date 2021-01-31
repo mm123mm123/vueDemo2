@@ -15,9 +15,8 @@
   </div>
 </template>
 <script>
-import {api} from '@/utils/ajax.js'
 import {router} from '../router'
-import {getToken, removeToken, setToken} from '@/utils/auth'
+import {setToken} from '@/utils/auth'
 
 export default {
   data () {
@@ -56,7 +55,7 @@ export default {
         if (valid) {
           this.$store.dispatch('login', this.ruleForm)
             .then(data => {
-              if (data.result === 'success') {
+              if (data.info.result === 'success') {
                 setToken()
                 router.push('/layout')
                 this.$store.dispatch('getInfo')

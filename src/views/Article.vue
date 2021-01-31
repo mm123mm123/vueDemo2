@@ -22,34 +22,68 @@
     <el-table-column
       label="管理"
       min-width="10%">
-      <template slot-scope="scope">
-        <el-button type="text" size="small">编辑</el-button>
+      <template v-slot:default="slotProps">
+        <el-button type="text" size="small" @click="edit(slotProps)">编辑</el-button>
       </template>
     </el-table-column>
   </el-table>
 </template>
 <script>
 import Layout from '../components/Layout'
+import {api} from '../utils/ajax'
 
 export default {
   components: {Layout},
-  methods: {
-    handleClick (row) {
-      console.log(row)
-    },
-    getArticleList () {
-      this.$store.dispatch('getArticleList').then(() => {
-        this.articleList = this.$store.getters.articleList
-      })
+  data () {
+    return {
+      articleList: [],
+      editRes: {
+        id: '',
+        content: ''
+      }
     }
   },
   created () {
     this.getArticleList()
   },
-  data () {
-    return {
-      articleList: []
+  methods: {
+    getArticleList () {
+      this.$store.dispatch('getArticleList').then(() => {
+        this.articleList = this.$store.getters.articleList
+      })
+    },
+    edit (slotProps) {
+      this.$prompt('请修改标题', '提示', {
+        inputValue:slotProps.row.content,
+        confirmButtonText: '修改',
+        cancelButtonText: '取消',
+      }).then(({value}) => {
+        this.editRes.content = value
+        this.editRes.id = slotProps.row.id
+        this.updateArticle()
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入'
+        })
+      })
+    },
+    updateArticle () {
+      api('POST', '/article/updateArticle', this.editRes)
+        .then(data => {
+          if (data.code === '100') {
+            this.getArticleList()
+          } else {
+            throw new Error(data.msg)
+          }
+        })
+        .catch(err => {
+          this.$message({
+            type: 'info',
+            message: err
+          })
+        })
     }
-  },
+  }
 }
 </script>

@@ -24,13 +24,8 @@ const api = function (method, path, data) {
         'Cookie': getToken(),
       },
       credentials: 'include',
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     }).then(res => res.json())
-      .then(jsonRes => {
-        if (jsonRes.code === '100') {
-          return jsonRes.info
-        }
-      })
   }
 }
 export {api}
