@@ -4,7 +4,7 @@ import Login from '@/views/Login'
 import Layout from '@/components/Layout'
 import Article from '@/views/Article'
 import User from '@/views/User'
-import Rights from '@/views/Rights'
+import Roles from '@/views/Roles'
 import {getToken} from '../utils/auth'
 import {store} from '../store'
 
@@ -33,9 +33,9 @@ const router = new Router({
           component: User
         },
         {
-          path: 'rights',
-          name: 'Rights',
-          component: Rights
+          path: 'roles',
+          name: 'Roles',
+          component: Roles
         }
       ]
     }
@@ -48,7 +48,7 @@ router.beforeEach((to, from, next) => {
       next()
     } else if (to.path === '/layout/user') {
       next()
-    } else if (to.path === '/layout/rights') {
+    } else if (to.path === '/layout/roles') {
       next()
     } else {
       next()

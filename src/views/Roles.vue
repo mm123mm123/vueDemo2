@@ -34,9 +34,6 @@ import Layout from '../components/Layout'
 export default {
   components: {Layout},
   methods: {
-    handleClick (row) {
-      console.log(row)
-    }
   },
 
   data () {

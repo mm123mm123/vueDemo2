@@ -2,7 +2,10 @@ import {getToken, removeToken, setToken} from '@/utils/auth'
 
 const api = function (method, path, data) {
   if (method === 'GET') {
-    const params = Object.keys(data).map(key => key + '=' + data[key]).join('&')
+    let params=''
+    if (data) {
+      params = Object.keys(data).map(key => key + '=' + data[key]).join('&')
+    }
     return fetch(process.env.BASE_URL + path + '?' + params, {
       method: 'GET',
       headers: {

@@ -1,6 +1,6 @@
 const getters = {
-  articleList: state => {
-    return state.article.articleList
-  },
+  articleList: state => state.article.articleList,
+  userList: state => state.user.userList,
+  roles: state => state.user.roles
 }
 export {getters}
