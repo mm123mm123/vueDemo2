@@ -8,7 +8,7 @@ const user = {
     },
     totalCount: 0,
     userList: [],
-    roles: []
+    userNickName: ''
   },
   mutations: {
     setUserList (state, data) {
@@ -17,22 +17,23 @@ const user = {
     setTotalCount (state, data) {
       state.totalCount = data.totalCount
     },
-    setRoles (state, data) {
-      state.roles = data.list
+    setUserNickName (state, data) {
+      state.userNickName = data.nickname
     }
   },
   actions: {
     login ({state, commit}, loginInfo) {
       return api('POST', '/login/auth', loginInfo)
     },
-    getInfo () {
+    getInfo ({commit}) {
       return api('POST', '/login/getInfo')
     },
-    getUserList ({state}) {
+    getUserList ({state,commit}) {
       return api('GET', '/user/list', state.listQuery)
-    },
-    getRoles () {
-      return api('GET', '/user/getAllRoles')
+        .then(data => {
+          commit('setUserList', data)
+          commit('setTotalCount', data)
+        })
     },
     addUser ({}, params) {
       api('POST', '/user/addUser', params.userInfo)
@@ -47,7 +48,7 @@ const user = {
       })
     },
     editUser ({}, params) {
-      api('POST', '/user/updateUser',  params.editUserInfo)
+      api('POST', '/user/updateUser', params.editUserInfo)
         .then(res => {
           if (res.code === '100') {
             params.success()
@@ -57,6 +58,9 @@ const user = {
         }).catch(err => {
         params.fail(err)
       })
+    },
+    deleteUser () {
+      api()
     }
   }
 }

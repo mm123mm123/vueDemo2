@@ -39,8 +39,8 @@
         label="管理"
         min-width="10%">
         <template v-slot:default="slotProps">
-          <el-button type="text" size="small" @click="buttonClick($event,slotProps)">修改</el-button>
-          <el-button type="text" size="small">删除</el-button>
+          <el-button type="text" @click="buttonClick($event,slotProps)">修改</el-button>
+          <delete-button :success="()=>deleteUser(slotProps)"></delete-button>
         </template>
       </el-table-column>
     </el-table>
@@ -81,9 +81,10 @@
 </template>
 <script>
 import Layout from '../components/Layout'
+import DeleteButton from '../components/deleteButton'
 
 export default {
-  components: {Layout},
+  components: {DeleteButton, Layout},
 
   data () {
     return {
@@ -109,10 +110,6 @@ export default {
   methods: {
     getUserList () {
       this.$store.dispatch('getUserList')
-        .then(data => {
-          this.$store.commit('setUserList', data)
-          this.$store.commit('setTotalCount', data)
-        })
         .then(() => {
           this.userList = this.$store.getters.userList
         })
@@ -120,7 +117,7 @@ export default {
     getRoles () {
       this.$store.dispatch('getRoles')
         .then(data => this.$store.commit('setRoles', data))
-        .then(()=>this.roles=this.$store.getters.roles)
+        .then(() => this.roles = this.$store.getters.roles)
     },
     buttonClick (event, prop) {
       this.dialogFormVisible = true
@@ -147,7 +144,6 @@ export default {
             fail: (err) => this.$message({type: 'info', message: err})
           })
       } else {
-        console.log(this.editUserInfo)
         this.$store.dispatch('editUser',
           {
             editUserInfo: this.editUserInfo,
@@ -165,6 +161,17 @@ export default {
         userId: '',
         username: '',
       }
+    },
+    deleteUser (props) {
+      this.editUserInfo = props.row
+      this.editUserInfo.deleteStatus = '2'
+      this.$store.dispatch('editUser',
+        {
+          editUserInfo: this.editUserInfo,
+          success: this.getUserList,
+          fail: (err) => this.$message({type: 'info', message: err})
+        }
+      )
     }
   },
   watch: {

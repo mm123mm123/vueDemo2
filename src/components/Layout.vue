@@ -19,12 +19,12 @@
       <el-header style="text-align: right; font-size: 12px">
         <el-dropdown>
           <i class="el-icon-setting" style="margin-right: 15px"></i>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>Home</el-dropdown-item>
-            <el-dropdown-item>LogOut</el-dropdown-item>
+          <el-dropdown-menu split-button="true">
+            <el-dropdown-item @click.native="toHome($route)">Home</el-dropdown-item>
+            <el-dropdown-item @click.native="logOut()">LogOut</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <span>王小虎</span>
+        <span>{{ userName }}</span>
       </el-header>
 
       <el-main style="padding: 0">
@@ -34,7 +34,37 @@
   </el-container>
 </template>
 <script>
+import {router} from '../router'
+import {api} from '../utils/ajax'
 
+export default {
+  data () {
+    return {
+      userName: '',
+      userList: []
+    }
+  },
+  created () {
+    this.$store.dispatch('getUserList')
+      .then(() => {
+        this.userList = this.$store.getters.userList
+      }).then(() => {
+      console.log(this.userList)
+    })
+  },
+  methods: {
+    toHome (route) {
+      if (route.fullPath !== '/layout') {
+        router.push('/layout')
+      }
+      location.reload()
+    },
+    logOut () {
+      api('POST', 'login/logout')
+      router.push('/login')
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
 .el-container {

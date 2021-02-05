@@ -6,7 +6,6 @@ import Article from '@/views/Article'
 import User from '@/views/User'
 import Roles from '@/views/Roles'
 import {getToken} from '../utils/auth'
-import {store} from '../store'
 
 Vue.use(Router)
 
