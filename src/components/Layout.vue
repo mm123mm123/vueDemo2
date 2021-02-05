@@ -45,12 +45,8 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch('getUserList')
-      .then(() => {
-        this.userList = this.$store.getters.userList
-      }).then(() => {
-      console.log(this.userList)
-    })
+    this.$store.dispatch('getInfo')
+      .then(()=>this.userName=this.$store.getters.userNickName)
   },
   methods: {
     toHome (route) {

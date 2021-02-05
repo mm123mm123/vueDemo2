@@ -58,7 +58,6 @@ export default {
               if (data.info.result === 'success') {
                 setToken()
                 router.push('/layout')
-                this.$store.dispatch('getInfo')
               }
             })
         } else {

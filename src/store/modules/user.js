@@ -27,6 +27,11 @@ const user = {
     },
     getInfo ({commit}) {
       return api('POST', '/login/getInfo')
+        .then(res => {
+          if (res.code === '100') {
+            commit('setUserNickName', res.info.userPermission)
+          }
+        })
     },
     getUserList ({state,commit}) {
       return api('GET', '/user/list', state.listQuery)
