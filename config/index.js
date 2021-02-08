@@ -13,7 +13,9 @@ module.exports = {
     proxyTable: {
       '/api': {
         // target: 'http://localhost:8097',
-        target: 'http://192.168.100.130:8097',        //另一台机器的IP地址
+        // target: 'http://192.168.100.130:8097',
+        target: 'http://vue.hillapi.com:6008',
+        changeOrigin: true,                     //为了让target可以使用域名
         pathRewrite: {
           '^/api': '/'
         }
@@ -52,7 +54,7 @@ module.exports = {
   },
 
   build: {
-    env:require('./prod.env'),
+    env: require('./prod.env'),
     // Template for index.html
     index: path.resolve(__dirname, '../dist/index.html'),
 

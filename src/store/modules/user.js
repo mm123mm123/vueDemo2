@@ -1,4 +1,5 @@
 import {api} from '../../utils/ajax'
+import {router, childrenRoutes} from '../../router'
 
 const user = {
   state: {
@@ -8,7 +9,8 @@ const user = {
     },
     totalCount: 0,
     userList: [],
-    userNickName: ''
+    userNickName: '',
+    userMenuList: []
   },
   mutations: {
     setUserList (state, data) {
@@ -19,21 +21,26 @@ const user = {
     },
     setUserNickName (state, data) {
       state.userNickName = data.nickname
+    },
+    setUserMenuList (state, data) {
+      state.userMenuList = data.menuList
     }
   },
   actions: {
     login ({state, commit}, loginInfo) {
       return api('POST', '/login/auth', loginInfo)
     },
-    getInfo ({commit}) {
+    getInfo ({state, commit}) {
       return api('POST', '/login/getInfo')
         .then(res => {
           if (res.code === '100') {
+            console.log(res)
             commit('setUserNickName', res.info.userPermission)
+            commit('setUserMenuList', res.info.userPermission)
           }
         })
     },
-    getUserList ({state,commit}) {
+    getUserList ({state, commit}) {
       return api('GET', '/user/list', state.listQuery)
         .then(data => {
           commit('setUserList', data)

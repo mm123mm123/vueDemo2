@@ -20,30 +20,31 @@ const router = new Router({
       path: '/layout',
       name: 'Layout',
       component: Layout,
-      children: [
-        {
-          path: 'article',
-          name: 'Article',
-          component: Article
-        },
-        {
-          path: 'user',
-          name: 'User',
-          component: User
-        },
-        {
-          path: 'roles',
-          name: 'Roles',
-          component: Roles
-        }
-      ]
     }
   ]
 })
-
+const childrenRoutes = [
+  {
+    path: 'article',
+    name: 'Article',
+    component: Article
+  },
+  {
+    path: 'user',
+    name: 'User',
+    component: User
+  },
+  {
+    path: 'role',
+    name: 'Role',
+    component: Roles
+  }
+]
 router.beforeEach((to, from, next) => {
   if (getToken()) {
-    if (to.path === '/layout/article') {
+    if (to.path === '/layout') {
+      next()
+    } else if (to.path === '/layout/article') {
       next()
     } else if (to.path === '/layout/user') {
       next()
@@ -60,4 +61,4 @@ router.beforeEach((to, from, next) => {
     }
   }
 })
-export {router}
+export {router,childrenRoutes}
