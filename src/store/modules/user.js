@@ -1,5 +1,4 @@
 import {api} from '../../utils/ajax'
-import {router, childrenRoutes} from '../../router'
 
 const user = {
   state: {
@@ -10,7 +9,8 @@ const user = {
     totalCount: 0,
     userList: [],
     userNickName: '',
-    userMenuList: []
+    userMenuList: [],
+    userPermissionList: []
   },
   mutations: {
     setUserList (state, data) {
@@ -24,6 +24,9 @@ const user = {
     },
     setUserMenuList (state, data) {
       state.userMenuList = data.menuList
+    },
+    setUserPermissionList (state, data) {
+      state.userPermissionList = data.permissionList
     }
   },
   actions: {
@@ -34,9 +37,9 @@ const user = {
       return api('POST', '/login/getInfo')
         .then(res => {
           if (res.code === '100') {
-            console.log(res)
             commit('setUserNickName', res.info.userPermission)
             commit('setUserMenuList', res.info.userPermission)
+            commit('setUserPermissionList', res.info.userPermission)
           }
         })
     },

@@ -4,7 +4,7 @@ const roles = {
   state: {
     rolesList: [],
     roleTable: [],
-    permissionList: []
+    allPermissionList: []
   },
   mutations: {
     setRoles (state, data) {
@@ -13,8 +13,8 @@ const roles = {
     setRoleTable (state, data) {
       state.roleTable = data.list
     },
-    setPermissionList (state, data) {
-      state.permissionList = data.list
+    setAllPermissionList (state, data) {
+      state.allPermissionList = data.list
     }
   },
   actions: {
@@ -24,7 +24,7 @@ const roles = {
     getRoleTable () {
       return api('GET', '/user/listRole')
     },
-    getPermissionList () {
+    getAllPermissionList () {
       return api('GET', '/user/listAllPermission')
     },
     addRole ({}, params) {

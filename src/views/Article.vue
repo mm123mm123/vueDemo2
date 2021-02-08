@@ -31,6 +31,7 @@
 <script>
 import Layout from '../components/Layout'
 import {api} from '../utils/ajax'
+import {store} from '../store'
 
 export default {
   components: {Layout},
@@ -43,7 +44,9 @@ export default {
       }
     }
   },
+
   created () {
+    console.log('运行？')
     this.getArticleList()
   },
   methods: {

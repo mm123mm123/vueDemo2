@@ -37,10 +37,12 @@
       </el-table-column>
       <el-table-column
         label="管理"
-        min-width="10%">
+        min-width="10%" v-if="userPermissionList.includes('user:update') || userPermissionList.includes('user:delete')">
         <template v-slot:default="slotProps">
-          <el-button type="text" @click="buttonClick($event,slotProps)">修改</el-button>
-          <delete-button :success="()=>deleteUser(slotProps)"></delete-button>
+          <el-button type="text" @click="buttonClick($event,slotProps)" v-if="userPermissionList.includes('user:update')">
+            修改
+          </el-button>
+          <delete-button :success="()=>deleteUser(slotProps)" v-if="userPermissionList.includes('user:update')"></delete-button>
         </template>
       </el-table-column>
     </el-table>
@@ -74,7 +76,7 @@
         <el-button type="primary" @click="dialogFormVisible = false;submitRequest(dialogStatus)">确 定</el-button>
       </div>
     </el-dialog>
-    <div class="createButtonWrapper">
+    <div class="createButtonWrapper" v-if="userPermissionList.includes('user:add')">
       <el-button @click='buttonClick($event)' style="display: block">新增用户</el-button>
     </div>
   </div>
@@ -101,11 +103,14 @@ export default {
         deleteStatus: '',
       },
       roles: [],
+      userPermissionList: []
     }
   },
   created () {
     this.getUserList()
     this.getRoles()
+    this.userPermissionList=this.$store.getters.userPermissionList
+    console.log(this.userPermissionList)
   },
   methods: {
     getUserList () {

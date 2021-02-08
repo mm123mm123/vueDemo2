@@ -2,26 +2,25 @@
   <el-container style="height: 100vh">
     <el-aside width="200px">
       <el-menu :router="true">
-        <el-menu-item v-if="isHidden('article')" index='article' :route="{name: 'Article'}" >
+        <el-menu-item v-if="menuList.indexOf('article')>=0" index='article' :route="{name: 'Article'}">
           文章
         </el-menu-item>
-        <el-submenu index="2" :class="isHidden('permission')">
+        <el-submenu index="2" v-if="menuList.includes('user') || menuList.includes('user')">
           <template slot="title">
             <i class="el-icon-menu"></i>
             用户权限
           </template>
           <el-menu-item-group>
-            <el-menu-item index="user" :route="{name: 'User'}" :class="isHidden('user')">
+            <el-menu-item index="user" :route="{name: 'User'}" v-if="menuList.includes('user')">
               用户列表
             </el-menu-item>
-            <el-menu-item index="role" :route="{name: 'Role'}" :class="isHidden('role')">
+            <el-menu-item index="role" :route="{name: 'Role'}" v-if="menuList.includes('role')">
               权限管理
             </el-menu-item>
           </el-menu-item-group>
         </el-submenu>
       </el-menu>
     </el-aside>
-
     <el-container>
       <el-header style="text-align: right; font-size: 12px">
         <el-dropdown>
@@ -50,7 +49,7 @@ export default {
     return {
       userName: '',
       userList: [],
-      menuList: []
+      menuList: [],
     }
   },
   created () {
@@ -78,15 +77,16 @@ export default {
       api('POST', 'login/logout')
       router.push('/login')
     },
-    isHidden (menuItemName) {
+    isVisible (menuItemName) {
+      console.log('v-if判断')
       const menuList = this.menuList
       if (menuList.length > 0) {
-        if (menuItemName === 'permission' && menuList.indexOf('user') < 0 && menuList.indexOf('role') < 0) {
+        if (menuItemName === 'permission' && menuList.indexOf('user') > 0 && menuList.indexOf('role') > 0) {
           return false
         }
-        return menuList.indexOf(menuItemName) >= 0;
+        this.visible = menuList.indexOf(menuItemName) >= 0
 
-      }else{
+      } else {
         return true
       }
     }

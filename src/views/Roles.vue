@@ -134,9 +134,9 @@ export default {
         .then(() => this.roleTable = this.$store.getters.roleTable)
     },
     getPermissionList () {
-      this.$store.dispatch('getPermissionList')
-        .then(data => this.$store.commit('setPermissionList', data))
-        .then(() => this.allPermissionList = this.$store.getters.permissionList)
+      this.$store.dispatch('getAllPermissionList')
+        .then(data => this.$store.commit('setAllPermissionList', data))
+        .then(() => this.allPermissionList = this.$store.getters.allPermissionList)
     },
     buttonClick (event, prop) {
       if (event.target.innerText === '新增角色') {

@@ -42,17 +42,7 @@ const childrenRoutes = [
 ]
 router.beforeEach((to, from, next) => {
   if (getToken()) {
-    if (to.path === '/layout') {
-      next()
-    } else if (to.path === '/layout/article') {
-      next()
-    } else if (to.path === '/layout/user') {
-      next()
-    } else if (to.path === '/layout/roles') {
-      next()
-    } else {
-      next()
-    }
+    next()
   } else {
     if (to.path === '/login') {
       next()
