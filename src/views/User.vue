@@ -110,7 +110,6 @@ export default {
     this.getUserList()
     this.getRoles()
     this.userPermissionList=this.$store.getters.userPermissionList
-    console.log(this.userPermissionList)
   },
   methods: {
     getUserList () {

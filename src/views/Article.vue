@@ -46,7 +46,6 @@ export default {
   },
 
   created () {
-    console.log('运行？')
     this.getArticleList()
   },
   methods: {

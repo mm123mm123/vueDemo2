@@ -1,7 +1,7 @@
 <template>
   <div class="formWrapper">
     <h1>后台管理系统</h1>
-    <el-form :model="ruleForm" status-icon  ref="ruleForm" class="demo-ruleForm" label-position="left">
+    <el-form :model="ruleForm" status-icon ref="ruleForm" class="demo-ruleForm" label-position="left">
       <el-form-item label="用户名" prop="username" label-width="55px">
         <el-input v-model="ruleForm.username" autocomplete="off"></el-input>
       </el-form-item>
@@ -15,11 +15,12 @@
   </div>
 </template>
 <script>
-import {router} from '../router'
+import {childrenRoutes, router} from '../router'
 import {setToken} from '@/utils/auth'
+import {store} from '../store'
 
 export default {
-  data () {
+  data() {
     return {
       ruleForm: {
         username: 'admin',
@@ -28,13 +29,13 @@ export default {
     }
   },
   methods: {
-    submitForm () {
+    submitForm() {
       this.$store.dispatch('login', this.ruleForm)
         .then(data => {
           if (data.info.result === 'success') {
             setToken()
             router.push('/layout')
-          }  else {
+          } else {
             throw new Error('请重新输入用户名或密码')
           }
         }).catch(err => {

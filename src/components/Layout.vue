@@ -40,56 +40,35 @@
   </el-container>
 </template>
 <script>
-import {childrenRoutes, router} from '../router'
+import {router} from '../router'
 import {api} from '../utils/ajax'
-import {store} from '../store'
+import {removeToken} from '../utils/auth'
 
 export default {
-  data () {
+  data() {
     return {
       userName: '',
       userList: [],
       menuList: [],
     }
   },
-  created () {
-    store.dispatch('getInfo').then(() => {
-        this.userName = this.$store.getters.userNickName
-        this.menuList = this.$store.getters.userMenuList
-        this.menuList.forEach((menuItem) => {
-          childrenRoutes.forEach((route) => {
-              if (route.path === menuItem) {
-                router.addRoute('Layout', route)
-              }
-            }
-          )
-        })
-      }
-    )
+  created() {
+    this.userName = this.$store.getters.userNickName
+    this.menuList = this.$store.getters.userMenuList
   },
   methods: {
-    toHome (route) {
+    toHome(route) {
       if (route.fullPath !== '/layout') {
         router.push('/layout')
       }
     },
-    logOut () {
-      api('POST', 'login/logout')
-      router.push('/login')
+    logOut() {
+      api('POST', 'login/logout').then(() => {
+        removeToken()
+        this.$store.commit('resetUser')
+        router.push('/login')
+      })
     },
-    isVisible (menuItemName) {
-      console.log('v-if判断')
-      const menuList = this.menuList
-      if (menuList.length > 0) {
-        if (menuItemName === 'permission' && menuList.indexOf('user') > 0 && menuList.indexOf('role') > 0) {
-          return false
-        }
-        this.visible = menuList.indexOf(menuItemName) >= 0
-
-      } else {
-        return true
-      }
-    }
   }
 }
 </script>

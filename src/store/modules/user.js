@@ -1,5 +1,6 @@
 import {api} from '../../utils/ajax'
 
+
 const user = {
   state: {
     listQuery: {
@@ -10,7 +11,7 @@ const user = {
     userList: [],
     userNickName: '',
     userMenuList: [],
-    userPermissionList: []
+    userPermissionList: [],
   },
   mutations: {
     setUserList (state, data) {
@@ -27,6 +28,9 @@ const user = {
     },
     setUserPermissionList (state, data) {
       state.userPermissionList = data.permissionList
+    },
+    resetUser(state){
+      state.userMenuList=[]
     }
   },
   actions: {

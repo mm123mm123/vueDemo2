@@ -6,6 +6,7 @@ const getters = {
   allPermissionList: state=> state.roles.allPermissionList,
   userNickName: state=>state.user.userNickName,
   userMenuList: state=>state.user.userMenuList,
-  userPermissionList:state=>state.user.userPermissionList
+  userPermissionList:state=>state.user.userPermissionList,
+  userRouter:state=>state.user.user
 }
 export {getters}

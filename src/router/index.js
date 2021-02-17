@@ -6,23 +6,23 @@ import Article from '@/views/Article'
 import User from '@/views/User'
 import Roles from '@/views/Roles'
 import {getToken} from '../utils/auth'
+import {store} from '../store'
 
 Vue.use(Router)
 
-const router = new Router({
-  routes: [
-    {
-      path: '/login',
-      name: 'Login',
-      component: Login
-    },
-    {
-      path: '/layout',
-      name: 'Layout',
-      component: Layout,
-    }
-  ]
-})
+
+const constantRoutes = [
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
+  },
+  {
+    path: '/layout',
+    name: 'Layout',
+    component: Layout,
+  }
+]
 const childrenRoutes = [
   {
     path: 'article',
@@ -40,15 +40,43 @@ const childrenRoutes = [
     component: Roles
   }
 ]
+let router = new Router({
+  routes: constantRoutes
+})
+
 router.beforeEach((to, from, next) => {
   if (getToken()) {
-    next()
+    console.log('登')
+    if (store.getters.userMenuList.length === 0) {
+      store.dispatch('getInfo').then(() => {
+          store.getters.userMenuList.forEach((menuItem) => {
+            childrenRoutes.forEach((route) => {
+                if (route.path === menuItem) {
+                  router.addRoute('Layout', route)
+                }
+              }
+            )
+          })
+        }
+      ).then(() => {
+        next({...to, replace: true})
+      })
+    } else {
+      next()
+    }
   } else {
     if (to.path === '/login') {
-      next()
+      if (from.fullPath.indexOf('layout') >= 0) {
+        router.matcher=new Router({
+          routes: constantRoutes
+        }).matcher
+        next()
+      } else {
+        next()
+      }
     } else {
       next('/login')
     }
   }
 })
-export {router,childrenRoutes}
+export {router, childrenRoutes}
