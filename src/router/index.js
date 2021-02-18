@@ -46,7 +46,6 @@ let router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (getToken()) {
-    console.log('登')
     if (store.getters.userMenuList.length === 0) {
       store.dispatch('getInfo').then(() => {
           store.getters.userMenuList.forEach((menuItem) => {

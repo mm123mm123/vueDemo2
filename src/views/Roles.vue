@@ -50,8 +50,8 @@
         label="管理"
         min-width="20%">
         <template v-slot:default="slotProp">
-          <el-button type="text" @click='buttonClick($event,slotProp)'>编辑</el-button>
-          <delete-button :success="()=>{deleteRole(slotProp)}"></delete-button>
+          <el-button type="text" @click='buttonClick($event,slotProp)' v-if="userPermissionList.includes('role:update')">编辑</el-button>
+          <delete-button :success="()=>{deleteRole(slotProp)}" v-if="userPermissionList.includes('role:delete')"></delete-button>
         </template>
       </el-table-column>
     </el-table>
@@ -83,7 +83,7 @@
       </div>
     </el-dialog>
     <div class="createButtonWrapper">
-      <el-button @click='buttonClick($event)' style="display: block">新增角色</el-button>
+      <el-button @click='buttonClick($event)' style="display: block" v-if="userPermissionList.includes('role:add')">新增角色</el-button>
     </div>
   </div>
 </template>
@@ -94,7 +94,7 @@ import DeleteButton from '../components/deleteButton'
 export default {
   components: {DeleteButton, Layout},
 
-  data () {
+  data() {
     return {
       roleTable: [],
       roleForm: {
@@ -114,31 +114,33 @@ export default {
       },
       selectedButtonName: '',
       clickNumbers: 0,
+      userPermissionList: []
     }
   },
-  created () {
+  created() {
     this.getRoleTable()
     this.getPermissionList()
+    this.userPermissionList = this.$store.getters.userPermissionList
   },
   watch: {
-    dialogFormVisible () {
+    dialogFormVisible() {
       if (this.dialogFormVisible === false) {
         this.resetForm()
       }
     }
   },
   methods: {
-    getRoleTable () {
+    getRoleTable() {
       this.$store.dispatch('getRoleTable')
         .then(data => this.$store.commit('setRoleTable', data))
         .then(() => this.roleTable = this.$store.getters.roleTable)
     },
-    getPermissionList () {
+    getPermissionList() {
       this.$store.dispatch('getAllPermissionList')
         .then(data => this.$store.commit('setAllPermissionList', data))
         .then(() => this.allPermissionList = this.$store.getters.allPermissionList)
     },
-    buttonClick (event, prop) {
+    buttonClick(event, prop) {
       if (event.target.innerText === '新增角色') {
         this.dialogFormVisible = true
         this.dialogStatus = 'create'
@@ -158,7 +160,7 @@ export default {
         this.isMenuSelected()
       }
     },
-    submitRequest (dialogStatus) {
+    submitRequest(dialogStatus) {
       if (dialogStatus === 'create') {
         this.$store.dispatch('addRole',
           {
@@ -179,7 +181,7 @@ export default {
           })
       }
     },
-    selectedRight (data, checkedMenuItemName) {
+    selectedRight(data, checkedMenuItemName) {
       const rightId = parseInt(data[1].target.defaultValue)
       if (data[0] === true) {
         this.form.permissions.push(rightId)
@@ -193,7 +195,7 @@ export default {
         }
       }
     },
-    resetForm () {
+    resetForm() {
       this.checkedMenuItem = []
       this.form = {
         permissions: [],
@@ -201,7 +203,7 @@ export default {
         roleName: ''
       }
     },
-    isMenuSelected () {
+    isMenuSelected() {
       const copyCheckedMenuItem = this.checkedMenuItem.map(item => Math.floor(item / 100))
       if (copyCheckedMenuItem.indexOf(1) >= 0) {
         for (const index of copyCheckedMenuItem.filter(x => x === 1)) {
@@ -219,7 +221,7 @@ export default {
         }
       }
     },
-    deleteRole (prop) {
+    deleteRole(prop) {
       this.form.roleId = prop.row.roleId
       this.$store.dispatch('deleteRole',
         {

@@ -23,7 +23,9 @@
       label="管理"
       min-width="10%">
       <template v-slot:default="slotProps">
-        <el-button type="text" size="small" @click="edit(slotProps)">编辑</el-button>
+        <el-button type="text" size="small" @click="edit(slotProps)"
+                   v-if="userPermissionList.includes('article:update')">编辑
+        </el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -31,32 +33,33 @@
 <script>
 import Layout from '../components/Layout'
 import {api} from '../utils/ajax'
-import {store} from '../store'
 
 export default {
   components: {Layout},
-  data () {
+  data() {
     return {
       articleList: [],
       editRes: {
         id: '',
         content: ''
-      }
+      },
+      userPermissionList: []
     }
   },
 
-  created () {
+  created() {
     this.getArticleList()
+    this.userPermissionList = this.$store.getters.userPermissionList
   },
   methods: {
-    getArticleList () {
+    getArticleList() {
       this.$store.dispatch('getArticleList').then(() => {
         this.articleList = this.$store.getters.articleList
       })
     },
-    edit (slotProps) {
+    edit(slotProps) {
       this.$prompt('请修改标题', '提示', {
-        inputValue:slotProps.row.content,
+        inputValue: slotProps.row.content,
         confirmButtonText: '修改',
         cancelButtonText: '取消',
       }).then(({value}) => {
@@ -70,7 +73,7 @@ export default {
         })
       })
     },
-    updateArticle () {
+    updateArticle() {
       api('POST', '/article/updateArticle', this.editRes)
         .then(data => {
           if (data.code === '100') {
