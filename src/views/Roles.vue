@@ -4,7 +4,12 @@
       :data="roleTable"
       :fit=true
       :border=true
+      :cell-style="{background:'#fff'}"
+      v-loading="loading"
     >
+      <template slot="empty">
+        <p>{{ loadingText }}</p>
+      </template>
       <el-table-column
         prop="roleId"
         label="序号"
@@ -50,8 +55,14 @@
         label="管理"
         min-width="20%">
         <template v-slot:default="slotProp">
-          <el-button type="text" @click='buttonClick($event,slotProp)' v-if="userPermissionList.includes('role:update')">编辑</el-button>
-          <delete-button :success="()=>{deleteRole(slotProp)}" v-if="userPermissionList.includes('role:delete')"></delete-button>
+          <el-button type="text" @click='buttonClick($event,slotProp)'
+                     v-if="userPermissionList.includes('role:update') && slotProp.row.menus.length!==0">
+            编辑
+          </el-button>
+          <delete-button :success="()=>{deleteRole(slotProp)}"
+                         v-if="userPermissionList.includes('role:delete') && slotProp.row.menus.length!==0">
+
+          </delete-button>
         </template>
       </el-table-column>
     </el-table>
@@ -83,7 +94,9 @@
       </div>
     </el-dialog>
     <div class="createButtonWrapper">
-      <el-button @click='buttonClick($event)' style="display: block" v-if="userPermissionList.includes('role:add')">新增角色</el-button>
+      <el-button @click='buttonClick($event)' style="display: block" v-if="userPermissionList.includes('role:add')">
+        新增角色
+      </el-button>
     </div>
   </div>
 </template>
@@ -114,7 +127,9 @@ export default {
       },
       selectedButtonName: '',
       clickNumbers: 0,
-      userPermissionList: []
+      userPermissionList: [],
+      loadingText: '',
+      loading: true
     }
   },
   created() {
@@ -133,12 +148,18 @@ export default {
     getRoleTable() {
       this.$store.dispatch('getRoleTable')
         .then(data => this.$store.commit('setRoleTable', data))
-        .then(() => this.roleTable = this.$store.getters.roleTable)
+        .then(() => {
+          this.roleTable = this.$store.getters.roleTable
+          if (!this.roleTable) {
+            this.loadingText = '暂无数据'
+          }
+        })
     },
     getPermissionList() {
       this.$store.dispatch('getAllPermissionList')
         .then(data => this.$store.commit('setAllPermissionList', data))
         .then(() => this.allPermissionList = this.$store.getters.allPermissionList)
+        .then(() => this.loading = false)
     },
     buttonClick(event, prop) {
       if (event.target.innerText === '新增角色') {
@@ -247,9 +268,7 @@ export default {
   border-radius: 2px;
 }
 </style>
-.el-table{
 
-}
 <style lang="scss" scoped>
 .tagGroupWrapper {
   .tag-group {

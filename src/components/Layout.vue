@@ -1,7 +1,7 @@
 <template>
   <el-container style="height: 100vh">
     <el-aside width="200px">
-      <el-menu :router="true" :default-active="this.$route.name.toLowerCase()">
+      <el-menu :router="true" :default-active="this.$route.name.toLowerCase()" text-color="#fff">
         <el-menu-item v-if="menuList.indexOf('article')>=0" index='article' :route="{name: 'Article'}">
           文章
         </el-menu-item>
@@ -10,6 +10,7 @@
             <i class="el-icon-menu"></i>
             用户权限
           </template>
+
           <el-menu-item-group>
             <el-menu-item index="user" :route="{name: 'User'}" v-if="menuList.includes('user')">
               用户列表
@@ -74,18 +75,35 @@ export default {
 </script>
 <style lang="scss" scoped>
 .el-container {
+  .el-aside { //#2d90ff
+    background-color: #202d3c;
 
-  .el-aside {
-    background-color: #FFF;
+    .el-menu {
+      background-color: #202d3c;
 
-    .hidden {
-      display: none;
+      .el-menu-item-group {
+        background-color: #202d3c;
+
+        .el-menu-item-group__title {
+          display: none;
+        }
+      }
+    }
+
+    .el-menu-item:hover {
+      background-color: #243950;
+    }
+
+
+    .el-menu-item.is-active {
+      background-color: #243950;
     }
   }
 
+
   .el-container {
     .el-header {
-      background-color: #B3C0D1;
+      background-color: #fff;
       color: #333;
       line-height: 60px;
     }
@@ -93,4 +111,17 @@ export default {
 
 }
 
+</style>
+<style lang="scss">
+.el-submenu {
+  .el-submenu__title:hover {
+    background-color: #243950;
+  }
+}
+
+.el-menu-item-group {
+  .el-menu-item-group__title {
+    display: none;
+  }
+}
 </style>

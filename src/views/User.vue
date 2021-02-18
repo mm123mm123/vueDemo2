@@ -4,7 +4,13 @@
       :data="userList"
       :fit=true
       :border=true
+      :cell-style="{background:'#fff'}"
+      v-loading="loading"
     >
+      <template slot="empty">
+        <p>{{ loadingText }}</p>
+      </template>
+
       <el-table-column
         prop="roleId"
         label="序号"
@@ -39,10 +45,14 @@
         label="管理"
         min-width="10%" v-if="userPermissionList.includes('user:update') || userPermissionList.includes('user:delete')">
         <template v-slot:default="slotProps">
-          <el-button type="text" @click="buttonClick($event,slotProps)" v-if="userPermissionList.includes('user:update')">
+          <el-button type="text" @click="buttonClick($event,slotProps)"
+                     v-if="userPermissionList.includes('user:update')">
             修改
           </el-button>
-          <delete-button :success="()=>deleteUser(slotProps)" v-if="userPermissionList.includes('user:update')"></delete-button>
+          <delete-button :success="()=>deleteUser(slotProps)"
+                         v-if="userPermissionList.includes('user:update') && userNickName!==slotProps.row.nickname">
+
+          </delete-button>
         </template>
       </el-table-column>
     </el-table>
@@ -88,7 +98,7 @@ import DeleteButton from '../components/deleteButton'
 export default {
   components: {DeleteButton, Layout},
 
-  data () {
+  data() {
     return {
       userList: [],
       dialogTitle: '',
@@ -103,27 +113,36 @@ export default {
         deleteStatus: '',
       },
       roles: [],
-      userPermissionList: []
+      userPermissionList: [],
+      loading: false,
+      loadingText: '',
+      userNickName: ''
     }
   },
-  created () {
+  created() {
+    this.loading = true
     this.getUserList()
     this.getRoles()
-    this.userPermissionList=this.$store.getters.userPermissionList
+    this.userPermissionList = this.$store.getters.userPermissionList
+    this.userNickName = this.$store.getters.userNickName
   },
   methods: {
-    getUserList () {
+    getUserList() {
       this.$store.dispatch('getUserList')
         .then(() => {
           this.userList = this.$store.getters.userList
+          if (!this.userList) {
+            this.loadingText = '暂无数据'
+          }
         })
     },
-    getRoles () {
+    getRoles() {
       this.$store.dispatch('getRoles')
         .then(data => this.$store.commit('setRoles', data))
         .then(() => this.roles = this.$store.getters.roles)
+        .then(() => this.loading = false)
     },
-    buttonClick (event, prop) {
+    buttonClick(event, prop) {
       this.dialogFormVisible = true
       if (event.target.innerText === '新增用户') {
         this.dialogStatus = 'create'
@@ -139,7 +158,7 @@ export default {
         })
       }
     },
-    submitRequest (dialogStatus) {
+    submitRequest(dialogStatus) {
       if (dialogStatus === 'create') {
         this.$store.dispatch('addUser',
           {
@@ -156,7 +175,7 @@ export default {
           })
       }
     },
-    resetUserInfo () {
+    resetUserInfo() {
       this.editUserInfo = {
         deleteStatus: '',
         nickname: '',
@@ -166,7 +185,7 @@ export default {
         username: '',
       }
     },
-    deleteUser (props) {
+    deleteUser(props) {
       this.editUserInfo = props.row
       this.editUserInfo.deleteStatus = '2'
       this.$store.dispatch('editUser',
@@ -179,7 +198,7 @@ export default {
     }
   },
   watch: {
-    dialogFormVisible () {
+    dialogFormVisible() {
       if (this.dialogFormVisible === false) {
         this.resetUserInfo()
       }

@@ -3,7 +3,12 @@
     :data="articleList"
     :fit=true
     :border=true
+    :cell-style="{background:'#fff'}"
+    v-loading="loading"
   >
+    <template slot="empty">
+      <p>{{ loadingText }}</p>
+    </template>
     <el-table-column
       prop="id"
       label="序号"
@@ -43,7 +48,9 @@ export default {
         id: '',
         content: ''
       },
-      userPermissionList: []
+      userPermissionList: [],
+      loadingText: '',
+      loading: true
     }
   },
 
@@ -55,6 +62,10 @@ export default {
     getArticleList() {
       this.$store.dispatch('getArticleList').then(() => {
         this.articleList = this.$store.getters.articleList
+        if (!this.articleList) {
+          this.loadingText = '暂无数据'
+        }
+        this.loading = false
       })
     },
     edit(slotProps) {
