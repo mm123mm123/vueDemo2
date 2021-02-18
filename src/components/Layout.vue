@@ -1,7 +1,7 @@
 <template>
   <el-container style="height: 100vh">
     <el-aside width="200px">
-      <el-menu :router="true">
+      <el-menu :router="true" :default-active="this.$route.name.toLowerCase()">
         <el-menu-item v-if="menuList.indexOf('article')>=0" index='article' :route="{name: 'Article'}">
           文章
         </el-menu-item>
